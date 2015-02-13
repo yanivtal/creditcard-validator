@@ -1,15 +1,15 @@
+// CardValidator can tell you whether a credit card number is a valid for any given network
+
+// Base class for all cards. Overwrite any of the following properties for customization:
+// network, iinPrefixes, iinPrefixRanges, lengths, lengthRanges
+// 
+// the isValid() method is generic and does not need to be overwritten
 var _Card = function () {
-  this.network = 'a';
+  this.network = '';
   this.iinPrefixes = [];
   this.iinPrefixRanges = [];
   this.lengths = [];
   this.lengthRanges = [];
-
-  // Range objects can be used for iinPrefixes or lengths
-  var range = {
-    start: undefined,
-    end: undefined
-  }
 
   function getPrefix (cardNumber, numDigits) {
     return cardNumber.substr(0, numDigits);
@@ -24,6 +24,7 @@ var _Card = function () {
     return false;
   };
 
+  // Range objects are of the form {start: [int], end: [ind]}
   this._hasPrefixInRange = function(cardNumber) {
     for (var i = 0; i < this.iinPrefixRanges.length; i++) {
       // We can use the property that all prefixes per each range have the same number of digits
@@ -34,11 +35,21 @@ var _Card = function () {
     return false;
   }
 
+  // Range objects are of the form {start: [int], end: [ind]}
+  this._hasLengthInRange = function(cardNumber) {
+    var numberLength = cardNumber.length;
+    for (var i = 0; i < this.lengthRanges.length; i++) {
+      if (numberLength >= this.lengthRanges[i].start && numberLength <= this.lengthRanges[i].end)
+        return true;
+    }
+    return false;
+  }
+
   this.isValid = function(cardNumber) {
     var hasCorrectLength = false;
     var hasRightPrefix = false;
 
-    hasCorrectLength = this.lengths.indexOf(cardNumber.length) !== -1;
+    hasCorrectLength = this.lengths.indexOf(cardNumber.length) !== -1 || this._hasLengthInRange(cardNumber);
     hasRightPrefix = this._hasPrefixInList(cardNumber) || this._hasPrefixInRange(cardNumber);
         
     return hasCorrectLength && hasRightPrefix;
@@ -76,89 +87,26 @@ var DiscoverCard = function () {
   this.lengths = [16];
 }
 
+var MaestroCard = function () {
+  this.network = 'Maestro';
+  this.iinPrefixes = ['5018', '5020', '5038', '5893', '6304', '6759', '6761', '6762', '6763', '0604'];
+  this.lengthRanges = [{start: 12, end: 19}];
+}
+
 DinersClubCard.prototype = new _Card();
 AmericanExpressCard.prototype = new _Card();
 VisaCard.prototype = new _Card();
 VisaElectronCard.prototype = new _Card();
 DiscoverCard.prototype = new _Card();
+MaestroCard.prototype = new _Card();
 
 var CardValidator = {
   DinersClub: new DinersClubCard(),
   AmericanExpress: new AmericanExpressCard(),
   Visa: new VisaCard(),
   VisaElectron: new VisaElectronCard(),
-  Discover: new DiscoverCard()
+  Discover: new DiscoverCard(),
+  Maestro: new MaestroCard()
 }
 
-//   TYPE_MAESTRO: 'Maestro',
-// };
-
 module.exports = CardValidator;
-
-/*
-#+------------------------------------+------------------------------------------------------------+--------+
-#| Issuing network                    | IIN prefix                                                 | Length |
-#+------------------------------------+------------------------------------------------------------+--------+
-#| Diners Club International          | 36                                                         | 14     |
-#| American Express                   | 34                                                         | 15     |
-
-
-#| Visa                               | 4                                                          | 13, 16 |
-#| Visa Electron                      | 4026, 417500, 4405, 4508, 4844, 4913, 4917                 | 16     |
-
-
-#| Discover Card                      | 6011, 622126-622925, 644-649, 65                           | 16     |
-
-#| Maestro                            | 5018, 5020, 5038, 5893, 6304, 6759, 6761, 6762, 6763, 0604 | 12-19  |
-
-
-      '36035390282568'     => 'Diners Club International',
-      '346416800707698'    => 'American Express',
-      
-      '4539369138573325'   => 'Visa',
-      '4539369353325'      => 'Visa',
-      '4175000123456789'   => 'Visa Electron',
-
-
-
-
-*/
- 
-// getCardNetwork: Returns a string describing the card network
-// var DINERS_CLUB = 'Diners Club International',
-//     AMERICAN_EXPRESS = 'American Express';
-
-// var VISA_ELECTRON_PREFIXES = ['4026', '417500', '4405', '4508', '4844', '4913', '4917'];
-
-
-// CardType = {
-//   prefixes: [],
-//   lengths: [],
-//   getPrefix: function (cardNumber, numDigits) {
-//     return cardNumber.substr(0, numDigits);
-//   },
-  // isValid: function(cardNumber) {
-  //   var hasCorrectLength = false;
-  //   var hasRightPrefix = false;
-    
-  //   hasCorrectLength = this.lengths.indexOf(cardNumber.length) !== -1;
-  //   hasRightPrefix = this.prefixes.indexOf(this.getPrefix(cardNumber)) !== -1;
-    
-  //   console.log('hasCorrectLength: ', hasCorrectLength);
-    
-  //   return hasCorrectLength && hasRightPrefix;
-  // }
-// }
-
-
-// function getCardNetwork(cardNumber) {
-//   if (cardNumber.length === 14 && cardNumber.substr(0,2) === '36') {
-//     return DINERS_CLUB;
-//   }
-//   else if (cardNumber.length === 15 && cardNumber.substr(0,2) === '34' ) {
-//     return AMERICAN_EXPRESS;
-//   }
-//   else {
-//     return null;
-//   }
-// }

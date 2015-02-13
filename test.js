@@ -62,11 +62,11 @@ describe("Credit Card Validator", function() {
     })
 
     it("Rejects invalid prefixes", function() {
-      assert(!CardValidator.AmericanExpress.isValid('4175010123456789'));
+      assert(!CardValidator.VisaElectron.isValid('4175010123456789'));
     })
 
     it("Rejects cards with 15 digits", function() {
-      assert(!CardValidator.AmericanExpress.isValid('417500012345678'));
+      assert(!CardValidator.VisaElectron.isValid('417500012345678'));
     })
   })
 
@@ -88,11 +88,33 @@ describe("Credit Card Validator", function() {
     })
 
     it("Rejects invalid prefixes", function() {
-      assert(!CardValidator.AmericanExpress.isValid('6501280123456789'));
+      assert(!CardValidator.Discover.isValid('6608000123456789'));
     })
 
     it("Rejects cards with 15 digits", function() {
-      assert(!CardValidator.AmericanExpress.isValid('649128012345678'));
+      assert(!CardValidator.Discover.isValid('649128012345678'));
+    })
+  })
+
+  describe("Maestro Cards", function() {
+    it("Correctly identifies a 12 digit card starting with 5018", function() {
+      assert(CardValidator.Maestro.isValid('501874837465'));
+    })
+
+    it("Correctly identifies a 19 digit card starting with 5018", function() {
+      assert(CardValidator.Maestro.isValid('5018748374659748576'));
+    })
+
+    it("Correctly identifies a 19 digit card starting with 0604", function() {
+      assert(CardValidator.Maestro.isValid('0604748374659748576'));
+    })
+
+    it("Rejects invalid prefixes", function() {
+      assert(!CardValidator.AmericanExpress.isValid('511874837465'));
+    })
+
+    it("Rejects cards with 20 digits", function() {
+      assert(!CardValidator.AmericanExpress.isValid('0604748374659748576'));
     })
   })
 })
