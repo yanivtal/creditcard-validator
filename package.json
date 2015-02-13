@@ -1,0 +1,17 @@
+{
+  "name": "card-validator",
+  "version": "0.0.0",
+  "description": "Validates credit cards",
+  "main": "cardValidator.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  },
+  "dependencies": {
+    "underscore": "^1.7.0"
+  }
+}
