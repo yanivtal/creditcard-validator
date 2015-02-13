@@ -79,13 +79,21 @@ describe("Credit Card Validator", function() {
       assert(CardValidator.Discover.isValid('6508000123456789'));
     })
 
-    // it("Rejects invalid prefixes", function() {
-    //   assert(!CardValidator.AmericanExpress.isValid('4175010123456789'));
-    // })
+    it("Correctly identifies a 16 digit card in the first range", function() {
+      assert(CardValidator.Discover.isValid('6221280123456789'));
+    })
 
-    // it("Rejects cards with 15 digits", function() {
-    //   assert(!CardValidator.AmericanExpress.isValid('417500012345678'));
-    // })
+    it("Correctly identifies a 16 digit card in the second range", function() {
+      assert(CardValidator.Discover.isValid('6491280123456789'));
+    })
+
+    it("Rejects invalid prefixes", function() {
+      assert(!CardValidator.AmericanExpress.isValid('6501280123456789'));
+    })
+
+    it("Rejects cards with 15 digits", function() {
+      assert(!CardValidator.AmericanExpress.isValid('649128012345678'));
+    })
   })
 })
 

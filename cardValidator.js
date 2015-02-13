@@ -27,7 +27,7 @@ var _Card = function () {
   this._hasPrefixInRange = function(cardNumber) {
     for (var i = 0; i < this.iinPrefixRanges.length; i++) {
       // We can use the property that all prefixes per each range have the same number of digits
-      intPrefix = parseInt(getPrefix(cardNumber, this.iinPrefixRanges[i].start.length), 10);
+      intPrefix = parseInt(getPrefix(cardNumber, this.iinPrefixRanges[i].start.toString().length), 10);
       if (intPrefix >= this.iinPrefixRanges[i].start && intPrefix <= this.iinPrefixRanges[i].end)
         return true;
     }
